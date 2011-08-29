@@ -15,10 +15,28 @@ Jarlint is a pretty basic Perl script that will look at your Java classpath, and
 Running jarlint
 ---------------
 
-The script looks at the environment for the classpath.
+The script will look in the following places for the classpath, in this order:
 
-    CLASSPATH=lib/foo.jar:lib/bar.jar:classes
+1. A file with the name of the first parameter from the command line.
+2. The first parameter from the command line. 
+3. The CLASSPATH environment variable. 
+
+Examples: 
+
+A file: 
+
+    jarlint classpath.txt
+
+Pass the classpath on the command line: 
+
+    jarlint ./classes:./lib/foo.jar:./lib/bar.jar
+
+Use the environment:
+
+    export CLASSPATH=lib/foo.jar:lib/bar.jar:classes
     jarlint
+
+
 
 
  
