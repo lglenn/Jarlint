@@ -1,0 +1,132 @@
+#!/usr/bin/perl
+
+use strict;
+use vars qw($TRUE $FALSE);
+
+use Digest::MD5;
+
+$TRUE = 1;
+$FALSE = 0;
+
+my(@classpath,%hashes,@nils,%names,%roots,%dupes,$dupes,@newcp,%binary_dupes);
+
+@classpath = split(/:/,$ENV{'CLASSPATH'});
+
+sub hashit($) {
+    my($file) = @_;
+    my($md5);
+    local(*F);
+    open(F,$file) || die "Could not open file '$file': $!\n";
+    $md5 = Digest::MD5->new;
+    $md5->addfile(*F);
+    return $md5->hexdigest();
+}
+
+for my $entry (@classpath) {
+    $dupes{$entry}++;
+    push(@newcp,$entry);
+    if(! -e $entry) {
+	push(@nils,$entry);
+	pop(@newcp);
+    } elsif (-f $entry) {
+	if($dupes{$entry} == 1) {
+	    my $hash = hashit($entry);
+	    my $root;
+	    if ($hashes{$hash}) {
+		pop(@newcp);
+	    }
+	    push(@{$hashes{$hash}},$entry);
+	    my ($basename) = $entry =~ m|.*/(.*)|;
+	    push(@{$names{$basename}}, $entry);
+	    if($basename =~ /(.*?)[0-9\.]+.(jar|zip)/i) {
+		$root = $1;
+		$root =~ s/[-\.]$//;
+	    } else {
+		($root) = $basename =~ /(.*)\.(jar|zip)/i;
+	    }
+	    push(@{$roots{$root}},$entry);
+	} else { # a dupe file
+	    pop(@newcp);
+	}
+    } elsif (-d $entry) {
+	pop(@newcp) if($dupes{$entry} > 1);
+    }
+}
+
+print "\n";
+print "\n";
+print "###############################################################################################\n";
+print "The Low-Hanging Fruit:\n";
+print "-----------------------------------------------------------------------------------------------\n";
+print "\n";
+
+print "The following classpath elements do not exist, and can safely be removed:\n";
+print "=========================================================================\n";
+foreach my $nil (sort(@nils)) {
+    print "$nil\n";
+}
+print "\n";
+
+print "The following classpath elements appear more than one time -- you can safely prune entries 2+:\n";
+print "==============================================================================================\n";
+while(my($k,$v) = each(%dupes)) {
+    if($v > 1) {
+	$dupes++;
+	print "$k\n";
+    }
+}
+print "\n";
+
+print "The following jar files appear to be binary-identical; you can safely remove instances 2+:\n";
+print "==========================================================================================\n";
+foreach my $hash (keys(%hashes)) {
+    if(@{$hashes{$hash}} > 1) {
+	$dupes++;
+	foreach(@{$hashes{$hash}}) {
+	    $binary_dupes{$_}++;
+	    print "$_\n";
+	}
+	print "\n";
+    }
+}
+
+print "\n";
+print "Safe new classpath:\n";
+print "===================\n";
+my $count = @nils + $dupes;
+my $pct = ($count / @classpath) * 100;
+printf("By my estimation, you can trim at least %d elements from your classpath right off the bat, a %0.0f%% reduction in its length. You can pretty safely try this:\n",$count,$pct);
+print "\n";
+print "CLASSPATH=" . join(':',@newcp) . "\n";
+
+print "\n";
+print "\n";
+print "###############################################################################################\n";
+print "The Hard Part:\n";
+print "-----------------------------------------------------------------------------------------------\n";
+print "\n";
+
+print "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.\n";
+print "==========================================================================================================================\n";
+foreach my $name (sort(keys(%names))) {
+    my @list = @{$names{$name}}; 
+    if(@list > 1) {
+	foreach(@list) {
+	    print "$_\n" unless($binary_dupes{$_});
+	}
+	print "\n";
+    }
+}
+print "\n";
+
+print "The following jars look like they're different versions of the same package. This also looks a little sketchy.\n";
+print "==============================================================================================================\n";
+foreach my $root (sort(keys(%roots))) {
+    my @list = @{$roots{$root}};
+    if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
+	foreach (@list) {
+	    print "$_\n";
+	}
+	print "\n";
+    }
+}
