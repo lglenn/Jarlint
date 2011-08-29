@@ -1,14 +1,14 @@
 #!/usr/bin/perl
 
 use strict;
-use vars qw($TRUE $FALSE);
+use vars;
+use English;
 
 use Digest::MD5;
 
-$TRUE = 1;
-$FALSE = 0;
+$OUTPUT_RECORD_SEPARATOR = "\n";
 
-my(@classpath,%hashes,@nils,%names,%roots,%dupes,$dupes,@newcp,%binary_dupes);
+my($classpath,@classpath,%hashes,@nils,%names,%roots,%dupes,$dupes,@newcp,%binary_dupes);
 
 @classpath = split(/:/,$ENV{'CLASSPATH'});
 
@@ -20,6 +20,26 @@ sub hashit($) {
     $md5 = Digest::MD5->new;
     $md5->addfile(*F);
     return $md5->hexdigest();
+}
+
+sub h($$) {
+    my($msg,$char) = @_;
+    return $msg . "\n" . $char x length($msg);
+}
+
+sub h1($) {
+    my ($msg) = @_;
+    h($msg,'=');
+}
+
+sub h2($) {
+    my($msg) = @_;
+    h($msg,'-');
+}
+
+sub code($) {
+    my($c) = @_;
+    " " x 4 . $c;
 }
 
 for my $entry (@classpath) {
@@ -53,80 +73,70 @@ for my $entry (@classpath) {
     }
 }
 
-print "\n";
-print "\n";
-print "###############################################################################################\n";
-print "The Low-Hanging Fruit:\n";
-print "-----------------------------------------------------------------------------------------------\n";
-print "\n";
+print;
+print;
+print h1("The Low-Hanging Fruit");
+print;
 
-print "The following classpath elements do not exist, and can safely be removed:\n";
-print "=========================================================================\n";
+print h2("The following classpath elements do not exist, and can safely be removed");
 foreach my $nil (sort(@nils)) {
-    print "$nil\n";
+    print code "$nil";
 }
-print "\n";
+print;
 
-print "The following classpath elements appear more than one time -- you can safely prune entries 2+:\n";
-print "==============================================================================================\n";
+print h2("The following classpath elements appear more than one time -- you can safely prune entries 2+");
 while(my($k,$v) = each(%dupes)) {
     if($v > 1) {
 	$dupes++;
-	print "$k\n";
+	print code "$k";
     }
 }
-print "\n";
+print;
 
-print "The following jar files appear to be binary-identical; you can safely remove instances 2+:\n";
-print "==========================================================================================\n";
+print h2("The following jar files appear to be binary-identical; you can safely remove instances 2+");
 foreach my $hash (keys(%hashes)) {
     if(@{$hashes{$hash}} > 1) {
 	$dupes++;
 	foreach(@{$hashes{$hash}}) {
 	    $binary_dupes{$_}++;
-	    print "$_\n";
+	    print code "$_";
 	}
-	print "\n";
+	print;
     }
 }
 
-print "\n";
-print "Safe new classpath:\n";
-print "===================\n";
+print;
+print h2("Safe new classpath");
 my $count = @nils + $dupes;
 my $pct = ($count / @classpath) * 100;
 printf("By my estimation, you can trim at least %d elements from your classpath right off the bat, a %0.0f%% reduction in its length. You can pretty safely try this:\n",$count,$pct);
-print "\n";
-print "CLASSPATH=" . join(':',@newcp) . "\n";
+print;
+print code "CLASSPATH=" . join(':', @newcp);
 
-print "\n";
-print "\n";
-print "###############################################################################################\n";
-print "The Hard Part:\n";
-print "-----------------------------------------------------------------------------------------------\n";
-print "\n";
+print;
+print;
+print h1("The Hard Part");
+print;
 
-print "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.\n";
-print "==========================================================================================================================\n";
+print h2("The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.");
 foreach my $name (sort(keys(%names))) {
     my @list = @{$names{$name}}; 
     if(@list > 1) {
 	foreach(@list) {
-	    print "$_\n" unless($binary_dupes{$_});
+	    print code "$_" unless($binary_dupes{$_});
 	}
-	print "\n";
+	print;
     }
 }
-print "\n";
+print;
 
-print "The following jars look like they're different versions of the same package. This also looks a little sketchy.\n";
-print "==============================================================================================================\n";
+print h2("The following jars look like they're different versions of the same package. This also looks a little sketchy.");
 foreach my $root (sort(keys(%roots))) {
     my @list = @{$roots{$root}};
     if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
 	foreach (@list) {
-	    print "$_\n";
+	    print code "$_";
 	}
-	print "\n";
+	print;
     }
 }
