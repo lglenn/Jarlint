@@ -106,11 +106,11 @@ for my $entry (@classpath) {
 
 print;
 print;
-print h1("The Low-Hanging Fruit");
+print h1 "The Low-Hanging Fruit";
 print;
 
 if(@nils > 0) {
-    print h2("The following classpath elements do not exist, and can safely be removed");
+    print h2 "The following classpath elements do not exist, and can safely be removed";
     foreach my $nil (sort(@nils)) {
 	print code "$nil";
     }
@@ -118,7 +118,7 @@ if(@nils > 0) {
 }
 
 if($dupes > 0) {
-    print h2("The following classpath elements appear more than one time -- you can safely prune entries 2+");
+    print h2 "The following classpath elements appear more than one time -- you can safely prune entries 2+";
     while(my($k,$v) = each(%dupes)) {
 	if($v > 1) {
 	    print code "$k";
@@ -128,7 +128,7 @@ if($dupes > 0) {
 }
 
 if(%binary_dupes > 0) {
-    print h2("The following jar files appear to be binary-identical; you can safely remove instances 2+");
+    print h2 "The following jar files appear to be binary-identical; you can safely remove instances 2+";
     foreach my $hash (keys(%hashes)) {
 	if(@{$hashes{$hash}} > 1) {
 	    foreach(@{$hashes{$hash}}) {
@@ -140,7 +140,7 @@ if(%binary_dupes > 0) {
 }
     
 print;
-print h2("Safe new classpath");
+print h2 "Safe new classpath";
 my $count = @nils + $dupes;
 my $pct = ($count / @classpath) * 100;
 printf("By my estimation, you can trim at least %d elements from your classpath right off the bat, a %0.0f%% reduction in its length. You can pretty safely try this:\n",$count,$pct);
@@ -149,7 +149,7 @@ print code "CLASSPATH=" . join(':', @newcp);
 
 print;
 print;
-print h1("The Hard Part");
+print h1 "The Hard Part";
 print;
 
 { 
@@ -164,7 +164,7 @@ print;
     }
 
     if(@jars > 0) {
-	print h2("The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.");
+	print h2 "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.";
 	foreach my $name (sort(keys(%names))) {
 	    my @list = @{$names{$name}}; 
 	    if(@list > 1) {
@@ -190,7 +190,7 @@ print;
     }
 
     if(@jars > 0) {
-	print h2("The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.");
+	print h2 "The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.";
 	foreach my $root (sort(keys(%roots))) {
 	    my @list = @{$roots{$root}};
 	    if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
