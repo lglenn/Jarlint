@@ -97,7 +97,10 @@ for my $entry (@classpath) {
 	    pop(@newcp);
 	}
     } elsif (-d $entry) {
-	pop(@newcp) if($dupes{$entry} > 1);
+	if($dupes{$entry} > 1) {
+	    pop(@newcp);
+	    $dupes++;
+	}
     }
 }
 
