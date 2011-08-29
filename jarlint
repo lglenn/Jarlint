@@ -53,6 +53,7 @@ for my $entry (@classpath) {
 	    my $hash = hashit($entry);
 	    my $root;
 	    if ($hashes{$hash}) {
+		$binary_dupes{$_}++;
 		pop(@newcp);
 	    }
 	    push(@{$hashes{$hash}},$entry);
@@ -66,6 +67,7 @@ for my $entry (@classpath) {
 	    }
 	    push(@{$roots{$root}},$entry);
 	} else { # a dupe file
+	    $dupes++;
 	    pop(@newcp);
 	}
     } elsif (-d $entry) {
@@ -78,33 +80,36 @@ print;
 print h1("The Low-Hanging Fruit");
 print;
 
-print h2("The following classpath elements do not exist, and can safely be removed");
-foreach my $nil (sort(@nils)) {
-    print code "$nil";
-}
-print;
-
-print h2("The following classpath elements appear more than one time -- you can safely prune entries 2+");
-while(my($k,$v) = each(%dupes)) {
-    if($v > 1) {
-	$dupes++;
-	print code "$k";
+if(@nils > 0) {
+    print h2("The following classpath elements do not exist, and can safely be removed");
+    foreach my $nil (sort(@nils)) {
+	print code "$nil";
     }
+    print;
 }
-print;
 
-print h2("The following jar files appear to be binary-identical; you can safely remove instances 2+");
-foreach my $hash (keys(%hashes)) {
-    if(@{$hashes{$hash}} > 1) {
-	$dupes++;
-	foreach(@{$hashes{$hash}}) {
-	    $binary_dupes{$_}++;
-	    print code "$_";
+if($dupes > 0) {
+    print h2("The following classpath elements appear more than one time -- you can safely prune entries 2+");
+    while(my($k,$v) = each(%dupes)) {
+	if($v > 1) {
+	    print code "$k";
 	}
-	print;
     }
+    print;
 }
 
+if(%binary_dupes > 0) {
+    print h2("The following jar files appear to be binary-identical; you can safely remove instances 2+");
+    foreach my $hash (keys(%hashes)) {
+	if(@{$hashes{$hash}} > 1) {
+	    foreach(@{$hashes{$hash}}) {
+		print code "$_";
+	    }
+	    print;
+	}
+    }
+}
+    
 print;
 print h2("Safe new classpath");
 my $count = @nils + $dupes;
@@ -118,25 +123,53 @@ print;
 print h1("The Hard Part");
 print;
 
-print h2("The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.");
-foreach my $name (sort(keys(%names))) {
-    my @list = @{$names{$name}}; 
-    if(@list > 1) {
-	foreach(@list) {
-	    print code "$_" unless($binary_dupes{$_});
+{ 
+    my(@jars);
+    foreach my $name (sort(keys(%names))) {
+	my @list = @{$names{$name}}; 
+	if(@list > 1) {
+	    foreach(@list) {
+		push(@jars,$_) unless($binary_dupes{$_});
+	    }
+	}
+    }
+
+    if(@jars > 0) {
+	print h2("The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.");
+	foreach my $name (sort(keys(%names))) {
+	    my @list = @{$names{$name}}; 
+	    if(@list > 1) {
+		foreach(@list) {
+		    print code "$_" unless($binary_dupes{$_});
+		}
+		print;
+	    }
 	}
 	print;
     }
 }
-print;
 
-print h2("The following jars look like they're different versions of the same package. This also looks a little sketchy.");
-foreach my $root (sort(keys(%roots))) {
-    my @list = @{$roots{$root}};
-    if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
-	foreach (@list) {
-	    print code "$_";
+{ 
+    my(@jars);
+    foreach my $root (sort(keys(%roots))) {
+	my @list = @{$roots{$root}};
+	if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
+	    foreach (@list) {
+		push(@jars,$_);
+	    }
 	}
-	print;
+    }
+
+    if(@jars > 0) {
+	print h2("The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.");
+	foreach my $root (sort(keys(%roots))) {
+	    my @list = @{$roots{$root}};
+	    if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
+		foreach (@list) {
+		    print code "$_";
+		}
+		print;
+	    }
+	}
     }
 }
