@@ -76,7 +76,10 @@ for my $entry (@classpath) {
 	    my $hash = hashit($entry);
 	    my $root;
 	    if ($hashes{$hash}) {
-		$binary_dupes{$_}++;
+		$binary_dupes{$entry}++;
+		foreach my $other (@{$hashes{$hash}}) {
+		    $binary_dupes{$other}++;
+		}
 		pop(@newcp);
 	    }
 	    push(@{$hashes{$hash}},$entry);
