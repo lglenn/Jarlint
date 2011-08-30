@@ -143,7 +143,7 @@ print;
 print h2 "Safe new classpath";
 my $count = @nils + $dupes;
 my $pct = ($count / @classpath) * 100;
-printf("By my estimation, you can trim at least %d elements from your classpath right off the bat, a %0.0f%% reduction in its length. You can pretty safely try this:\n",$count,$pct);
+printf "By my estimation, you can trim at least %d elements from your classpath right off the bat, a %0.0f%% reduction in its length. You can pretty safely try this:\n", $count, $pct;
 print;
 print code "CLASSPATH=" . join(':', @newcp);
 
