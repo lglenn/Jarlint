@@ -1,0 +1,2 @@
+export CLASSPATH=./test/fixtures/classes:./test/fixtures/lib/a/binary_dupe_1.jar:./test/fixtures/lib/a/named_dupe.jar:./test/fixtures/lib/b/binary_dupe_2.jar:./test/fixtures/lib/b/named_dupe.jar:./test/fixtures/lib/b/only_one_of_these.jar:./test/fixtures/lib/nonexistent_jar.jar:./test/fixtures/nonexistent_directory/:./test/fixtures/lib/b/only_one_of_these.jar:./test/fixtures/lib/c/versioned_jar.jar:./test/fixtures/lib/a/versioned_jar-0.2.3.jar:./test/fixtures/lib/a/versioned_jar.0.2.5.jar;
+
