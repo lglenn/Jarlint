@@ -162,17 +162,10 @@ print;
 	    }
 	}
     }
-
     if(@jars > 0) {
 	print h2 "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.";
-	foreach my $name (sort(keys(%names))) {
-	    my @list = @{$names{$name}}; 
-	    if(@list > 1) {
-		foreach(@list) {
-		    print code "$_" unless($binary_dupes{$_});
-		}
-		print;
-	    }
+	foreach (@jars) {
+	    print code $_;
 	}
 	print;
     }
@@ -191,15 +184,10 @@ print;
 
     if(@jars > 0) {
 	print h2 "The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.";
-	foreach my $root (sort(keys(%roots))) {
-	    my @list = @{$roots{$root}};
-	    if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
-		foreach (@list) {
-		    print code "$_";
-		}
-		print;
-	    }
+	foreach(@jars) {
+	    print code "$_";
 	}
+	print;
     }
 }
 
