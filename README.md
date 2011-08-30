@@ -23,6 +23,11 @@ You'll need to have the Digest::MD5 Perl module installed. That's pretty standar
 
 If nothing happens, you're good (hit ctrl-d to get on with things). If you get an error message, you're not good, and you'll need to get the module installed. 
 
+Installation
+------------
+
+Simply un-(tar|zip) the distribution file, then copy 'jarlint' to a directory that's in your path. Or, leave it where it is, and run it by giving the shell the full path to jarlint.
+
 Running jarlint
 ---------------
 
