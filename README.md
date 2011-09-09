@@ -34,7 +34,7 @@ In the directory where you'd like to keep the jarlint script, run these two comm
 
 Or:
 
-* Download a installation tarball/zipfile from Github at [https://github.com/lglenn/Jarlint/archives/master]
+* Download a installation tarball/zipfile from Github at https://github.com/lglenn/Jarlint/archives/master
 * Un(tar|zip) the install file
 * Copy the jarlint script to the plave you'd like to keep it
 * Just to be sure, do a `chmod a+x jarlint` on it. 
