@@ -43,8 +43,8 @@ sub hashit($) {
     open(F,$file) || die "Could not open file '$file': $!\n";
     $md5->addfile(*F);
     $hash = $md5->hexdigest();
-	close(*F);
-	return $hash;
+    close(*F);
+    return $hash;
 }
 
 sub h($$) {
