@@ -26,7 +26,18 @@ If nothing happens, you're good (hit ctrl-d to get on with things). If you get a
 Installation
 ------------
 
-Simply un-(tar|zip) the distribution file, then copy 'jarlint' to a directory that's in your path. Or, leave it where it is, and run it by giving the shell the full path to jarlint.
+In the directory where you'd like to keep the jarlint script, run these two commands: 
+
+	curl -fsSL https://raw.github.com/gist/1206183/af12c38644a9ecba55975acc68aa5508c85bd41d/jarlint > jarlint
+
+	chmod a+x jarlint
+
+Or:
+
+* Download a installation tarball/zipfile from Github at [https://github.com/lglenn/Jarlint/archives/master]
+* Un(tar|zip) the install file
+* Copy the jarlint script to the plave you'd like to keep it
+* Just to be sure, do a `chmod a+x jarlint` on it. 
 
 Running jarlint
 ---------------
