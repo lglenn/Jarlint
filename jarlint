@@ -67,7 +67,6 @@ sub getClasspathFromEnvFile($) {
 	    last;
 	}
 	close(F);
-	$_ = ""; # need this so you can just say print (no args) later. 
 	return split(/:/,$classpath);
 }
 
@@ -120,6 +119,8 @@ for my $entry (@classpath) {
 	}
     }
 }
+
+$_ = ""; # need this so you can just say print (no args) later. 
 
 print;
 print;
