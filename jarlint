@@ -47,76 +47,76 @@ sub blank() {
 }
 
 sub getClasspathFromString($) {
-	my($str) = @_;
-	return split(/:/,$str);
+    my($str) = @_;
+    return split(/:/,$str);
 }
 
 sub getClasspathFromEnvFile($) {
-	my($cp) = @_;
-	my($classpath);
-	local(*F);
-	open(F,$cp) || die "Couldn't open '$cp': $!\n";
-	while(<F>) {
-	    chomp();
-	    next if (/^#/ || $_ !~ /\w/);
-	    s/.*CLASSPATH=//i;
-	    s/^\s*//;
-	    s/\s*$//;
-	    s/;$//;
-	    $classpath = $_;
-	    last;
-	}
-	close(F);
-	return split(/:/,$classpath);
+    my($cp) = @_;
+    my($classpath);
+    local(*F);
+    open(F,$cp) || die "Couldn't open '$cp': $!\n";
+    while(<F>) {
+        chomp();
+        next if (/^#/ || $_ !~ /\w/);
+        s/.*CLASSPATH=//i;
+        s/^\s*//;
+        s/\s*$//;
+        s/;$//;
+        $classpath = $_;
+        last;
+    }
+    close(F);
+    return split(/:/,$classpath);
 }
 
 if(@ARGV > 0) {
-	my $cp = shift();
-	if(-e $cp) {
-		@classpath = getClasspathFromEnvFile($cp);
-	} else {
-		@classpath = getClasspathFromString($cp);
-	}
+    my $cp = shift();
+    if(-e $cp) {
+        @classpath = getClasspathFromEnvFile($cp);
+    } else {
+        @classpath = getClasspathFromString($cp);
+    }
 } else {
-	@classpath = getClasspathFromString($ENV{'CLASSPATH'});
-}	    
+    @classpath = getClasspathFromString($ENV{'CLASSPATH'});
+}       
 
 for my $entry (@classpath) {
     $dupes{$entry}++;
     push(@newcp,$entry);
     if(! -e $entry) {
-	push(@nils,$entry);
-	pop(@newcp);
+        push(@nils,$entry);
+        pop(@newcp);
     } elsif (-f $entry) {
-	if($dupes{$entry} == 1) {
-	    my $hash = hashit($entry);
-	    my $root;
-	    if ($hashes{$hash}) {
-		$binary_dupes{$entry}++;
-		foreach my $other (@{$hashes{$hash}}) {
-		    $binary_dupes{$other}++;
-		}
-		pop(@newcp);
-	    }
-	    push(@{$hashes{$hash}},$entry);
-	    my ($basename) = $entry =~ m|.*/(.*)|;
-	    push(@{$names{$basename}}, $entry);
-	    if($basename =~ /(.*?)[0-9\.]+.(jar|zip)/i) {
-		$root = $1;
-		$root =~ s/[-\.]$//;
-	    } else {
-		($root) = $basename =~ /(.*)\.(jar|zip)/i;
-	    }
-	    push(@{$roots{$root}},$entry);
-	} else { # a dupe file
-	    $dupes++;
-	    pop(@newcp);
-	}
+        if($dupes{$entry} == 1) {
+            my $hash = hashit($entry);
+            my $root;
+            if ($hashes{$hash}) {
+                $binary_dupes{$entry}++;
+                foreach my $other (@{$hashes{$hash}}) {
+                    $binary_dupes{$other}++;
+                }
+                pop(@newcp);
+            }
+            push(@{$hashes{$hash}},$entry);
+            my ($basename) = $entry =~ m|.*/(.*)|;
+            push(@{$names{$basename}}, $entry);
+            if($basename =~ /(.*?)[0-9\.]+.(jar|zip)/i) {
+                $root = $1;
+                $root =~ s/[-\.]$//;
+            } else {
+                ($root) = $basename =~ /(.*)\.(jar|zip)/i;
+            }
+            push(@{$roots{$root}},$entry);
+        } else { # a dupe file
+            $dupes++;
+            pop(@newcp);
+        }
     } elsif (-d $entry) {
-	if($dupes{$entry} > 1) {
-	    pop(@newcp);
-	    $dupes++;
-	}
+        if($dupes{$entry} > 1) {
+            pop(@newcp);
+            $dupes++;
+        }
     }
 }
 
@@ -132,7 +132,7 @@ if(@nils > 0) {
     print "The following classpath elements do not exist, and can safely be removed";
     print;
     foreach my $nil (sort(@nils)) {
-	print code "$nil";
+    print code "$nil";
     }
     print;
 }
@@ -142,9 +142,9 @@ if($dupes > 0) {
     print "The following classpath elements appear more than one time -- you can safely prune entries 2+";
     print;
     while(my($k,$v) = each(%dupes)) {
-	if($v > 1) {
-	    print code "$k";
-	}
+        if($v > 1) {
+            print code "$k";
+        }
     }
     print;
 }
@@ -154,12 +154,12 @@ if(%binary_dupes > 0) {
     print "The following jar files appear to be binary-identical; you can safely remove instances 2+";
     print;
     foreach my $hash (keys(%hashes)) {
-	if(@{$hashes{$hash}} > 1) {
-	    foreach(@{$hashes{$hash}}) {
-		print code "$_";
-	    }
-	    print;
-	}
+        if(@{$hashes{$hash}} > 1) {
+            foreach(@{$hashes{$hash}}) {
+                print code "$_";
+            }
+            print;
+        }
     }
 }
     
@@ -179,43 +179,42 @@ print;
 { 
     my(@jars);
     foreach my $name (sort(keys(%names))) {
-	my @list = @{$names{$name}}; 
-	if(@list > 1) {
-	    foreach(@list) {
-		push(@jars,$_) unless($binary_dupes{$_});
-	    }
-	}
+        my @list = @{$names{$name}}; 
+        if(@list > 1) {
+            foreach(@list) {
+                push(@jars,$_) unless($binary_dupes{$_});
+            }
+        }
     }
     if(@jars > 0) {
-	print h2 "Same Name, Different Files";
-	print "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.";
-	print;
-	foreach (@jars) {
-	    print code $_;
-	}
-	print;
+        print h2 "Same Name, Different Files";
+        print "The following jars exist in more than one directory, and are binary-different. This is bad, and requires manual sleuthing.";
+        print;
+        foreach (@jars) {
+            print code $_;
+        }
+        print;
     }
 }
 
 { 
     my(@jars);
     foreach my $root (sort(keys(%roots))) {
-	my @list = @{$roots{$root}};
-	if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
-	    foreach (@list) {
-		push(@jars,$_);
-	    }
-	}
+        my @list = @{$roots{$root}};
+        if(@list > 1 && grep(/\d\.\d/,@list) > 0) {
+            foreach (@list) {
+                push(@jars,$_);
+            }
+        }
     }
 
     if(@jars > 0) {
-	print h2 "Different Versions of the Same Jar";
-	print "The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.";
-	print;
-	foreach(@jars) {
-	    print code "$_";
-	}
-	print;
+        print h2 "Different Versions of the Same Jar";
+        print "The following jars look like they're different versions of the same package. This is a little sketchy, and is probably worth checking out.";
+        print;
+        foreach(@jars) {
+            print code "$_";
+        }
+        print;
     }
 }
-
