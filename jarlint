@@ -10,31 +10,6 @@ $OUTPUT_RECORD_SEPARATOR = "\n";
 
 my($classpath,@classpath,%hashes,@nils,%names,%roots,%dupes,$dupes,@newcp,%binary_dupes);
 
-if(@ARGV > 0) {
-    my $cp = shift();
-    if(-e $cp) {
-	local(*F);
-	open(F,$cp) || die "Couldn't open '$cp': $!\n";
-	while(<F>) {
-	    chomp();
-	    next if (/^#/ || $_ !~ /\w/);
-	    s/.*CLASSPATH=//i;
-	    s/^\s*//;
-	    s/\s*$//;
-	    s/;$//;
-	    $classpath = $_;
-	    last;
-	}
-	close(F);
-	$_ = ""; # need this so you can just say print (no args) later. 
-    } else {
-	$classpath = $cp;
-    }
-} else {
-    $classpath = $ENV{'CLASSPATH'};
-}	    
-@classpath = split(/:/,$classpath);
-
 sub hashit($) {
     my($file) = @_;
     my($md5,$hash);
@@ -70,6 +45,31 @@ sub code($) {
 sub blank() {
     "";
 }
+
+if(@ARGV > 0) {
+    my $cp = shift();
+    if(-e $cp) {
+	local(*F);
+	open(F,$cp) || die "Couldn't open '$cp': $!\n";
+	while(<F>) {
+	    chomp();
+	    next if (/^#/ || $_ !~ /\w/);
+	    s/.*CLASSPATH=//i;
+	    s/^\s*//;
+	    s/\s*$//;
+	    s/;$//;
+	    $classpath = $_;
+	    last;
+	}
+	close(F);
+	$_ = ""; # need this so you can just say print (no args) later. 
+    } else {
+	$classpath = $cp;
+    }
+} else {
+    $classpath = $ENV{'CLASSPATH'};
+}	    
+@classpath = split(/:/,$classpath);
 
 for my $entry (@classpath) {
     $dupes{$entry}++;
