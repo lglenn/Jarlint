@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -s
 
 use strict;
 use vars;
@@ -55,19 +55,12 @@ sub getClasspathFromEnvFile($) {
     my($cp) = @_;
     my($classpath);
     local(*F);
-    open(F,$cp) || die "Couldn't open '$cp': $!\n";
+    open(F,$cp) || die "Couldn't open classpath file '$cp': $!\n";
     while(<F>) {
-        chomp();
-        next if (/^#/ || $_ !~ /\w/);
-        s/.*CLASSPATH=//i;
-        s/^\s*//;
-        s/\s*$//;
-        s/;$//;
-        $classpath = $_;
-        last;
+        last if(($classpath) = /.*CLASSPATH=(.*?)[;\s]/i);
     }
     close(F);
-    return split(/:/,$classpath);
+    return getClasspathFromString($classpath);
 }
 
 if(@ARGV > 0) {
@@ -132,7 +125,7 @@ if(@nils > 0) {
     print "The following classpath elements do not exist, and can safely be removed";
     print;
     foreach my $nil (sort(@nils)) {
-    print code "$nil";
+        print code "$nil";
     }
     print;
 }
@@ -162,7 +155,7 @@ if(%binary_dupes > 0) {
         }
     }
 }
-    
+
 print;
 print h2 "Safe new classpath";
 my $count = @nils + $dupes;
