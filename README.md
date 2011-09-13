@@ -12,7 +12,7 @@ Jarlint is a pretty basic Perl script that will look at your Java classpath, and
 * worrisome duplicates (same filename, different bits, different paths -- uh-oh!)
 * multiple versions (a fuzzy match that'll look for e.g. foo.jar and foo-1.2.jar)
 
-After trolling through your system, jarlint will produce a report that outlines what it found, what's a problem, and why. And it's marked uo with [markdown](http://daringfireball.net/projects/markdown/) so it's readable as-is, but can also be easily prettied up with HTML conversion and CSS if you want to use it in a more formal setting. 
+After trolling through your system, jarlint will produce a report that outlines what it found, what's a problem, and why. And it's marked up with [markdown](http://daringfireball.net/projects/markdown/) so it's readable as-is, but can also be easily prettied up with HTML conversion and CSS if you want to use it in a more formal setting. 
 
 Much as I'd like to write this in something more fun, Perl is pretty reliably going to be on any box, and Java is too much of an arse-ache.
 
