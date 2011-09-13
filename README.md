@@ -30,7 +30,7 @@ Installation
 
 In the directory where you'd like to keep the jarlint script, run these two commands: 
 
-    curl -fsSL https://raw.github.com/gist/1206183/af12c38644a9ecba55975acc68aa5508c85bd41d/jarlint > jarlint
+    curl -fsSL https://raw.github.com/lglenn/Jarlint/master/jarlint > jarlint
 
     chmod a+x jarlint
 
