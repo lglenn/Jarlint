@@ -28,9 +28,9 @@ Installation
 
 In the directory where you'd like to keep the jarlint script, run these two commands: 
 
-	curl -fsSL https://raw.github.com/gist/1206183/af12c38644a9ecba55975acc68aa5508c85bd41d/jarlint > jarlint
+    curl -fsSL https://raw.github.com/gist/1206183/af12c38644a9ecba55975acc68aa5508c85bd41d/jarlint > jarlint
 
-	chmod a+x jarlint
+    chmod a+x jarlint
 
 Or:
 
@@ -48,6 +48,8 @@ The script will look in the following places for the classpath, in this order:
 2. The first parameter from the command line.
 3. The CLASSPATH environment variable.
 
+Jarlint can read two kinds of files: text files that contain a CLASSPATH Unix-style environment variable declaration, and Blue Martini log files. In each case, jarlint will read the file until it finds the classpath, and then close it. It won't, for example, read all of a 2-gig Blue Martini log file. 
+
 If the classpath contains relative paths (e.g. './lib/foo.jar'), make sure that you run jarlint from someplace where those paths will resolve correctly.
 
 ### Examples:
@@ -59,6 +61,10 @@ Pass the classpath on the command line:
 Pass a filename on the command line:
 
     jarlint classpath.txt
+
+Pass the name of a Blue Martini log on the command line: 
+
+    jarlint website.log
 
 Use the environment:
 
