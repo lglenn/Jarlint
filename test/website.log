@@ -1,0 +1,77 @@
+++++++	1315800002113	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] trueshould use webservice 
+
+++++++	1315800002113	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] some log message here
+
+++++++	1315800002165	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] ouch
+
+++++++	1315800002166	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] Dave?
+
+++++++	1315800002166	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] I feel like such a failure.
+
+++++++	1315800002170	foo	ExecuteThread: '62' for queue: 'default'	00000000	1	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] Well, that didn't work.
+
+++++++	1315800002170	foo	ExecuteThread: '62' for queue: 'default'	00000000	1	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] org.apache.axis.AxisFault: FATAL: You're doomed -- you're using Axis. 
+
+++++++	1315800002170	foo	ExecuteThread: '62' for queue: 'default'	00000000	5	<no class>	<no method>	[Mon Sep 12 00:00:02 EDT 2011] [com.foo.bar.SomeClass] Getting info from database for acctnum : REDACTED
+
+++++++	1315800039076	exceptions	ExecuteThread: '31' for queue: 'default'	00120010	0	<no class>	<no method>	JSP_EXECUTION_FAILED
+++++++	1315800039079	exceptions	ExecuteThread: '31' for queue: 'default'	00120020	1	<no class>	<no method>	BMException ************************************************
+
+JSP_EXECUTION_FAILED
+
+DNAArray [
+    {
+        "error" String "JSP_EXECUTION_FAILED",
+        "thread" String "ExecuteThread: '31' for queue: 'default'",
+        "timestamp" String "2011-09-12 00:00:39.032",
+        "bmsRelease" String "CORE 10.1.4.19.24",
+        "bmsBuild" String "2010553",
+        "javaVersion" String "1.1.0_12",
+        "javaVendor" String "Azul Systems, Inc.",
+        "javaClassPath" String "./test/fixtures:./test/fixtures/lib:./test/fixtures/lib/a:./test/fixtures/lib/a/binary_dupe_1.jar:./test/fixtures/lib/a/named_dupe.jar:./test/fixtures/lib/a/versioned_jar-0.2.3.jar:./test/fixtures/lib/a/versioned_jar.0.2.5.jar:./test/fixtures/lib/b:./test/fixtures/lib/b/binary_dupe_2.jar:./test/fixtures/lib/b/named_dupe.jar:./test/fixtures/lib/b/only_one_of_these.jar:./test/fixtures/lib/c:./test/fixtures/lib/c/versioned_jar.jar",
+        "javaLibraryPath" String "/path/to/a/lib:/path/to/another/lib",
+        "osName" String "TOS",
+        "osArch" String "ZX81",
+        "osVersion" String "1.2",
+        "osLocale" String "en_US",
+        "params" DNA {
+            "exception" String "javax.servlet.jsp.el.ELException",
+            "stackTrace" String "	at javelin.jsp.el.ArrayRefEvaluator.evaluateBeanType(ArrayRefEvaluator.java:252)
+	at javelin.jsp.el.ArrayRefEvaluator.evaluate(ArrayRefEvaluator.java:49)
+	at javelin.jsp.el.ELNode\$RefExpression.evaluate(ELNode.java:492)
+	at javelin.jsp.el.ExpressionEvaluatorImpl.evaluate(ExpressionEvaluatorImpl.java:120)
+	at javelin.jsp.el.ExpressionEvaluatorImpl.evaluate(ExpressionEvaluatorImpl.java:100)
+	at com.bluemartini.html.DefaultRequestHandler.executeJSPFilter(DefaultRequestHandler.java:93)
+	... 12 more
+"
+        }
+    }
+]
+
+Stack trace:
+	at com.bluemartini.html.DefaultRequestHandler.getException(DefaultRequestHandler.java:156)
+	at com.bluemartini.html.DefaultRequestHandler.executeJSPFilter(DefaultRequestHandler.java:106)
+	at com.bluemartini.html.StandardRequestHandler.executeJSP(StandardRequestHandler.java:694)
+	at com.bluemartini.html.HTMLFilter.doFilter(HTMLFilter.java:346)
+	at weblogic.servlet.internal.FilterChainImpl.doFilter(FilterChainImpl.java:42)
+	at weblogic.servlet.internal.WebAppServletContext$ServletInvocationAction.run(WebAppServletContext.java:3242)
+	at weblogic.security.acl.internal.AuthenticatedSubject.doAs(AuthenticatedSubject.java:321)
+	at weblogic.security.service.SecurityManager.runAs(SecurityManager.java:121)
+	at weblogic.servlet.internal.WebAppServletContext.securedExecute(WebAppServletContext.java:2010)
+	at weblogic.servlet.internal.WebAppServletContext.execute(WebAppServletContext.java:1916)
+	at weblogic.servlet.internal.ServletRequestImpl.run(ServletRequestImpl.java:1366)
+	at weblogic.work.ExecuteRequestAdapter.execute(ExecuteRequestAdapter.java:21)
+	at weblogic.kernel.ExecuteThread.execute(ExecuteThread.java:145)
+	at weblogic.kernel.ExecuteThread.run(ExecuteThread.java:117)
+Caused by: javax.servlet.jsp.el.ELException
+	at javelin.jsp.el.ArrayRefEvaluator.evaluateBeanType(ArrayRefEvaluator.java:252)
+	at javelin.jsp.el.ArrayRefEvaluator.evaluate(ArrayRefEvaluator.java:49)
+	at javelin.jsp.el.ELNode$RefExpression.evaluate(ELNode.java:492)
+	at javelin.jsp.el.ExpressionEvaluatorImpl.evaluate(ExpressionEvaluatorImpl.java:120)
+	at javelin.jsp.el.ExpressionEvaluatorImpl.evaluate(ExpressionEvaluatorImpl.java:100)
+	at weblogic.servlet.jsp.JspBase.service(JspBase.java:34)
+	at weblogic.servlet.internal.StubSecurityHelper$ServletServiceAction.run(StubSecurityHelper.java:227)
+	at weblogic.servlet.internal.StubSecurityHelper.invokeServlet(StubSecurityHelper.java:125)
+	at weblogic.servlet.internal.ServletStubImpl.execute(ServletStubImpl.java:283)
+	at weblogic.servlet.internal.TailFilter.doFilter(TailFilter.java:26)
+	at weblogic.servlet.internal.FilterChainImpl.doFilter(FilterChainImpl.java:42)

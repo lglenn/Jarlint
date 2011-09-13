@@ -51,13 +51,14 @@ sub getClasspathFromString($) {
     return split(/:/,$str);
 }
 
-sub getClasspathFromEnvFile($) {
+sub getClasspathFromFile($) {
     my($cp) = @_;
     my($classpath);
     local(*F);
     open(F,$cp) || die "Couldn't open classpath file '$cp': $!\n";
     while(<F>) {
         last if(($classpath) = /.*CLASSPATH=(.*?)[;\s]/i);
+        last if(($classpath) = /"javaClassPath"\s+String\s+"(.*?)"/);
     }
     close(F);
     return getClasspathFromString($classpath);
@@ -66,7 +67,7 @@ sub getClasspathFromEnvFile($) {
 if(@ARGV > 0) {
     my $cp = shift();
     if(-e $cp) {
-        @classpath = getClasspathFromEnvFile($cp);
+        @classpath = getClasspathFromFile($cp);
     } else {
         @classpath = getClasspathFromString($cp);
     }
