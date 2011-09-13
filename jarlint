@@ -1,4 +1,4 @@
-#!/usr/bin/perl -s
+#!/usr/bin/perl
 
 use strict;
 use vars;
